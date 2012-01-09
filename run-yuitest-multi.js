@@ -37,15 +37,19 @@ if (typeof(phantom) !== "undefined" && (phantom.version.major >= 1 && phantom.ve
     console.log("    --testDirectory          optional path to the tests directory");
     console.log("    --testFileMatch          optional regex to match test files");
     console.log("    --testUrl                optional path in testDirectory to html file, or url, which will load tests");
+    console.log("    --testRunId              optional ID to store results with (for use with multi file runs)");
+    console.log("    --browserId              optional ID to store results with (for use with multi browser runs)");
     // TODO
-    //console.log("    --testRunId              optional ID to store results with (for use with multi file runs)");
-    //console.log("    --browserId              optional ID to store results with (for use with multi browser runs)");
     //console.log("    --testResultsServer      optional url to send results back to");
     phantom.exit(0);
   }
 
   var fs = require('fs'),
-      outDir = (options.outputDirectory || options.o) ? options.outputDirectory : 'output/';
+      outDir = (options.outputDirectory || options.o) ? options.outputDirectory : 'output' + fs.separator;
+
+  // use supplied ID's to create a unique output directory for the run in the browser
+  outDir += (!isUndefined(options.testRunId) ? options.testRunId + fs.separator : '0' + fs.separator);
+  outDir += (!isUndefined(options.browserId) ? options.browserId + fs.separator : 'unknown' + fs.separator);
 
   // clear old results
   fs.removeTree(outDir);
