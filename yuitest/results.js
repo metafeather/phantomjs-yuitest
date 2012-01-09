@@ -185,7 +185,7 @@ function testResultsToDisk(data) {
 function updateTestRunData(data) {
 
   if (data.js && !isUndefined(testRunData)){
-    testRunData.userAgent += data.userAgent;
+    testRunData.userAgent = data.userAgent;
     testRunData.progress += data.progress;
     testRunData.timestamp = data.js.timestamp;
     testRunData.duration += data.js.duration;
