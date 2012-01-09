@@ -29,7 +29,10 @@ if (typeof(phantom) !== "undefined" && (phantom.version.major >= 1 && phantom.ve
     console.log("    phantomjs run-yuitest.js -h/--help");
     console.log("    phantomjs run-yuitest.js -v/--version");
     console.log("    phantomjs run-yuitest.js /path/to/yuitest/html/file1.html /path/to/yuitest/html/file2.html");
+    console.log("    phantomjs run-yuitest.js http://path/to/yuitest/html/file1.html http://path/to/yuitest/html/file2.html");
+    console.log("    phantomjs run-yuitest.js --testRunId=Ticket1234 --browserId=IE8 http://path/to/yuitest/html/file1.html http://path/to/yuitest/html/file2.html");
     console.log("    phantomjs run-yuitest.js --testDirectory=tests --testFileMatch=\.js$ --testUrl=unit.html?test_suite=");
+    console.log("    phantomjs run-yuitest.js --outputDirectory=../../output --testDirectory=../../tests --testFileMatch=(model/|view/|controller/)(.*)\.js$ --testUrl=unit.html?test_suite=");
     console.log("    phantomjs run-yuitest.js --testResultsServer=http://localhost:8080");
     console.log("");
     console.log("  Options:");
