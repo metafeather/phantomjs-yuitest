@@ -1,0 +1,8 @@
+{
+  // need --allow-file-access-from-files flag for non HTTP XHR requests to work
+  // ref: http://code.google.com/p/chromium/issues/detail?id=40787
+  // bug: http://code.google.com/p/phantomjs/issues/detail?id=291
+
+  'cookies-file': 'cookies.txt',
+  'ignoreSslErrors': true
+}
