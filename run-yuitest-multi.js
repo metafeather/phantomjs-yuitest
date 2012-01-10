@@ -7,7 +7,7 @@
  * Home: https://github.com/metafeather/phantomjs-yuitest
  */
 
-var fileoverview = "PhantomJS YUITest Driver (v0.3)";
+var fileoverview = "PhantomJS YUITest Driver (v0.3.1)";
 
 if (typeof(phantom) !== "undefined" && (phantom.version.major >= 1 && phantom.version.minor >= 4)) {
 
@@ -142,7 +142,7 @@ if (typeof(phantom) !== "undefined" && (phantom.version.major >= 1 && phantom.ve
       data = testRunReport();
 
       // exit indicating failed states
-      exit = (data.timeouts > 0 || data.missing > 0 ? 1: 0);
+      exit = ((data.files.timeouts > 0 || data.files.missing > 0) ? 1: 0);
       console.log('PhantomJS exit status: '+ exit);
       phantom.exit(exit);
     }
