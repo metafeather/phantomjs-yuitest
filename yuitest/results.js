@@ -26,6 +26,8 @@ function initPageProperties(){
   page.evaluate(function(){
     // tell the page its running under PhantomJS
     window.PhantomJS = true;
+    // visual record of tests results
+    window.TestRunProgress = '';
   });
 
 };
@@ -35,10 +37,8 @@ function subscribeToTestRunner(){
 
   page.evaluate(function(){
 
-    if(window.Y && Y.Test.Runner) {
+    if(window.Y && Y.Test && Y.Test.Runner) {
 
-      // visual record of tests results
-      window.TestRunProgress = '';
       function handleTestResult(data){
         switch(data.type) {
           case Y.Test.Runner.TEST_PASS_EVENT:
@@ -74,7 +74,7 @@ function waitForResults(){
       console.log('Waiting for results ... ');
 
       return page.evaluate(function(){
-        if(window.Y && Y.Test.Runner) {
+        if(window.Y && Y.Test && Y.Test.Runner) {
           return !Y.Test.Runner.isRunning();
         } else if(window.leon && leon.TestRunner) {
           return !leon.TestRunner.isRunning();
@@ -91,7 +91,7 @@ function waitForResults(){
 
       // export test results data
       var data = page.evaluate(function(){
-        if(window.Y && Y.Test.Runner) {
+        if(window.Y && Y.Test && Y.Test.Runner) {
           return {
             js: Y.Test.Runner.getResults(), // JS object
             tap: Y.Test.Runner.getResults(Y.Test.Format.TAP), // plain text
