@@ -1,0 +1,41 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<title>Unit Tests</title>
+
+<script src="http://yui.yahooapis.com/3.4.1/build/yui/yui-min.js"></script>
+<script src="unit.js"></script>
+
+</head>
+
+<body class="yui3-skin-sam">
+
+<script>
+  /*
+   * Create a list of links to launch individual test files
+   */
+  var test_files = [
+
+    "tests-to-run.js"
+
+  ]
+</script>
+
+<h1>Unit Tests:</h1>
+
+<p>
+Choose one of the test suite files below.
+</p>
+<p>
+Or a path may be specified in URL query string, e.g. <code>unit.html?test_suite=path_to_test.json</code>
+</p>
+<ol>
+<script>
+  for (var i=0; i <test_files.length; i++){
+    document.write( "<li><a href='?test_suite=" + test_files[i] + "'>" + test_files[i] + "</a></li>" );
+  };
+</script>
+</ol>
+
+</body>
+</html>
