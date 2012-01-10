@@ -36,9 +36,9 @@ if (typeof(phantom) !== "undefined" && (phantom.version.major >= 1 && phantom.ve
     console.log("    phantomjs run-yuitest.js --testResultsServer=http://localhost:8080");
     console.log("");
     console.log("  Options:");
-    console.log("    -o/--outputDirectory     optional path to the output directory");
-    console.log("    --testDirectory          optional path to the tests directory");
-    console.log("    --testFileMatch          optional regex to match test files");
+    console.log("    -o/--outputDirectory     optional path to the output directory, default .");
+    console.log("    --testDirectory          optional path to the tests directory, default .");
+    console.log("    --testFileMatch          optional regex to match test files, default \.html$");
     console.log("    --testUrl                optional path in testDirectory to html file, or url, which will load tests");
     console.log("    --testRunId              optional ID to store results with (for use with multi file runs)");
     console.log("    --browserId              optional ID to store results with (for use with multi browser runs)");

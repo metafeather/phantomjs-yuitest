@@ -21,6 +21,7 @@ You need the PhantomJS browser installed on your system. You can download binari
 [the PhantomJS download section][].
 
 You will also need a HTML page with YUI Test present and test cases setup to run *onload*, and which exposes the test runner as *window.Y.Test.Runner*.
+(see *examples/unit_testing_file/unit.html*)
 
 ## Usage
 
