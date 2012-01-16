@@ -70,6 +70,11 @@ function optionParser(args){
     }
     // if a option does not supply a value use true
     pair[1] = ((isUndefined(pair[1]) || pair[1] === '') ?  true : pair[1])
+    // convert true/false/yes/no strings to booleans
+    pair[1] = ((pair[1] === 'true') ?  true : pair[1])
+    pair[1] = ((pair[1] === 'yes') ?  true : pair[1])
+    pair[1] = ((pair[1] === 'false') ?  false : pair[1])
+    pair[1] = ((pair[1] === 'no') ?  false : pair[1])
 
     //onsole.log('Option: '+ pair[0] +'='+ pair[1])
     return pair;

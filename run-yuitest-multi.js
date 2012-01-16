@@ -7,7 +7,7 @@
  * Home: https://github.com/metafeather/phantomjs-yuitest
  */
 
-var fileoverview = "PhantomJS YUITest Driver (v0.3.4)";
+var fileoverview = "PhantomJS YUITest Driver (v0.3.6)";
 
 if (typeof(phantom) !== "undefined" && (phantom.version.major >= 1 && phantom.version.minor >= 4)) {
 
@@ -43,6 +43,7 @@ if (typeof(phantom) !== "undefined" && (phantom.version.major >= 1 && phantom.ve
     console.log("    --testRunId              optional ID to store results with (for use with multi file runs)");
     console.log("    --browserId              optional ID to store results with (for use with multi browser runs)");
     console.log("    --timeout                optional number of secs to wait for a test file to complete");
+    console.log("    --enableWindowLogging    optional enable the test file to write to console.log");
     // TODO
     //console.log("    --testResultsServer      optional url to send results back to");
     phantom.exit(0);
@@ -67,7 +68,7 @@ if (typeof(phantom) !== "undefined" && (phantom.version.major >= 1 && phantom.ve
       fileName = '',
       url = '';
 
-  function openPage(options) {
+  function openPage() {
     var data,
         exit = 1;
 
@@ -84,13 +85,15 @@ if (typeof(phantom) !== "undefined" && (phantom.version.major >= 1 && phantom.ve
     }
 
     // Route "console.log()" calls from within the Page context to the main Phantom context (i.e. current "this")
-    page.onConsoleMessage = function(msg, line, source) {
-      // onsole.log(source +':'+ line +':'+ msg);
-      console.log('Log: '+msg);
-    };
-    page.onAlert = function(msg) {
-      console.log('Alert: '+ msg);
-    };
+    if (options.enableWindowLogging){
+      page.onConsoleMessage = function(msg, line, source) {
+        // onsole.log(source +':'+ line +':'+ msg);
+        console.log('Log: '+msg);
+      };
+      page.onAlert = function(msg) {
+        console.log('Alert: '+ msg);
+      };
+    }
 
     // load file
     if (pageindex < testFiles.length) {
