@@ -161,21 +161,21 @@ function testResultsTimeout() {
 function testResultsToDisk(data) {
 
   // save an image of the page
-  page.render(outDir +"images" + fs.separator + (pageindex + 1) +'-'+ fileName + ".png");
+  page.render(outDir +"images" + fs.separator + "TEST-" + (pageindex + 1) +'-'+ fileName + ".png");
 
   // save other formats
   if (data.json){
-    fs.write(outDir +"json" + fs.separator + (pageindex + 1) +'-'+ fileName + ".json", data.json, 'w');
+    fs.write(outDir +"json" + fs.separator + "TEST-" + (pageindex + 1) +'-'+ fileName + ".json", data.json, 'w');
   }
   if (data.junit){
-    fs.write(outDir +"junit" + fs.separator + (pageindex + 1) +'-'+ fileName + ".xml", data.junit, 'w');
+    fs.write(outDir +"junit" + fs.separator + "TEST-" + (pageindex + 1) +'-'+ fileName + ".xml", data.junit, 'w');
   }
   if (data.xml){
-    fs.write(outDir +"xml" + fs.separator + (pageindex + 1) +'-'+ fileName + ".xml", data.xml, 'w');
+    fs.write(outDir +"xml" + fs.separator + "TEST-" + (pageindex + 1) +'-'+ fileName + ".xml", data.xml, 'w');
   }
   // parseable but human readable output
   if (data.tap){
-    fs.write(outDir +"tap" + fs.separator + (pageindex + 1) +'-'+ fileName + ".txt", data.txt, 'w');
+    fs.write(outDir +"tap" + fs.separator + "TEST-" + (pageindex + 1) +'-'+ fileName + ".txt", data.txt, 'w');
     console.log('Test results: '+ data.tap);
   }
 
