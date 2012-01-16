@@ -7,7 +7,7 @@
  * Home: https://github.com/metafeather/phantomjs-yuitest
  */
 
-var fileoverview = "PhantomJS YUITest Driver (v0.3.2)";
+var fileoverview = "PhantomJS YUITest Driver (v0.3.3)";
 
 if (typeof(phantom) !== "undefined" && (phantom.version.major >= 1 && phantom.version.minor >= 4)) {
 
@@ -42,6 +42,7 @@ if (typeof(phantom) !== "undefined" && (phantom.version.major >= 1 && phantom.ve
     console.log("    --testUrl                optional path in testDirectory to html file, or url, which will load tests");
     console.log("    --testRunId              optional ID to store results with (for use with multi file runs)");
     console.log("    --browserId              optional ID to store results with (for use with multi browser runs)");
+    console.log("    --timeout                optional number of secs to wait for a test file to complete");
     // TODO
     //console.log("    --testResultsServer      optional url to send results back to");
     phantom.exit(0);

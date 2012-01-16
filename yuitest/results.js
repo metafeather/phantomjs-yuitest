@@ -14,10 +14,15 @@ var testRunData = {
       passed: 0,
       failed: 0,
       ignored: 0
-    };
+    },
+    timeout = 10;
 
 if (!isUndefined(options.testRunId)){
   testRunData.id = options.testRunId;
+}
+
+if (!isUndefined(options.timeout)){
+  timeout = options.timeout;
 }
 
 // This callback is invoked after the web page is created and before a URL is loaded. The callback may be used to change global objects.
@@ -127,7 +132,7 @@ function waitForResults(){
     },
 
     // if the tests take too long, or errored, log and move on
-    10000, // default timeout 30000
+    (timeout * 1000), // default timeout 30000
     function onTimeout(){
       testResultsTimeout();
 
