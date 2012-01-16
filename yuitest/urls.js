@@ -8,7 +8,7 @@ function makeTestUrls(options){
 
   // workout paths to test files to load based on sensible defaults and supplied options
   var dir = fs.workingDirectory,
-      allFiles = dirwalk(dir, 3),
+      allFiles = dirwalk(dir),
       testFiles = [],
       FILE_MATCH_RE = /\.html$/;
 

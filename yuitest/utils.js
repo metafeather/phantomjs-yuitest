@@ -95,59 +95,37 @@ function optionParser(args){
 }
 
 /**
- * Collect all files in folders, with optional recursing
- * @param dir The starting directory to look in.
- * @param [recurse=1] How many levels deep to scan.
+ * List all the files in a Tree of Directories
+ * @param path The starting directory to look in.
  * @returns An array of all the paths to files in the given dir.
  */
-function dirwalk(dir, recurse, _allFiles, _path) {
-  // onsole.log('ls '+ dir +' '+ recurse +' '+ _allFiles +' '+ _path)
+function dirwalk(path) {
+  var files = [];
 
-  if (isUndefined(dir)) {
-    throw 'dirwalk requires a dir to walk.';
-  }
-  if (isUndefined(_path)) { // initially
-    var _allFiles = [];
-    var _path = [dir];
-  }
-  if (_path.length === 0) {
-    return _allFiles;
-  }
-  if (isUndefined(recurse)) {
-    recurse = 1;
-  }
-
-  // is the dir argument actually a file?
-  if (fs.isFile(dir)) {
-    _allFiles.push(dir);
-  } else {
-    var files = fs.list(dir);
-    for (var i = 0; i < files.length; i++) {
-      var file = files[i];
-
-      if (file.match(/^\./)) {
-        continue; // skip dot files
-      }
-
-      if (fs.isDirectory(file)) { // it's a directory
-        _path.push(file);
-
-        if (_path.length-1 < recurse) {
-          // recurse the function with the new path
-          dir = _path.join(fs.separator)
-          dirwalk(dir, recurse, _allFiles, _path);
-        }
-        _path.pop();
-      }
-      else {
-        file = (_path.join(fs.separator)+fs.separator+file).replace(fs.separator+fs.separator, fs.separator)
-        _allFiles.push(file);
-      }
+  // inner function to recurse trough the directories
+  function scanDirectory(path) {
+    if (isUndefined(path)) {
+      throw 'scanDirectory requires a path to walk.';
     }
-  }
+    var fs = require('fs');
 
-  return _allFiles;
-}
+    if (fs.exists(path) && fs.isFile(path)) {
+      // onsole.log(path);
+      files.push(path);
+    } else if (fs.isDirectory(path)) {
+      fs.list(path).forEach(function (e) {
+        if ( e !== "." && e !== ".." ) {    //< Avoid loops
+          scanDirectory(path + '/' + e);
+        }
+      });
+    }
+  };
+
+  scanDirectory(path);
+  // onsole.log(files.length)
+  return files;
+};
+
 
 /**
  * Wait until the test condition is true or a timeout occurs. Useful for waiting
