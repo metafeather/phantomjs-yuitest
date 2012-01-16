@@ -147,6 +147,9 @@ function testResultsMissing() {
   console.log('Test results: MISSING')
   console.log('')
 
+  // save an image of the page
+  page.render(outDir +"images" + fs.separator + "TEST-" + (pageindex + 1) +'-'+ fileName + ".png");
+
   // update test run
   testRunData.progress += 'M';
   testRunData.files.missing++;
@@ -157,10 +160,13 @@ function testResultsTimeout() {
   console.log('Test results: TIMEOUT')
   console.log('')
 
-      // update test run
-      testRunData.progress += 'T';
-      testRunData.files.timeouts++;
-      testRunData.files.total++;
+  // save an image of the page
+  page.render(outDir +"images" + fs.separator + "TEST-" + (pageindex + 1) +'-'+ fileName + ".png");
+
+  // update test run
+  testRunData.progress += 'T';
+  testRunData.files.timeouts++;
+  testRunData.files.total++;
 }
 
 function testResultsToDisk(data) {
