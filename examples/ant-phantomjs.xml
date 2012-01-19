@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Common PhantomJS Tasks for Javascript/UI development">
+
+  <description>
+  <![CDATA[
+    Include file for PhantomJS tasks.
+    The common build script should include this file rather than duplicating functionality.
+  ]]>
+  </description>
+
+  <property name="out.phantomjs" value="${reports.dir}/unit/" description="The location of PhantomJS reports" />
+
+  <macrodef name="phantomjs-testrunner-multi" description="load javascript test files using phantomjs and report">
+    <attribute name="outputDirectory" default="${out.phantomjs}" />
+    <attribute name="testDirectory" default="tests" />
+    <attribute name="testFileMatch" default="\.js$"/>
+    <attribute name="testUrl" default="http://localhost/phantomjs/${module.name}/tests/unit.html?test_suite="/>
+    <attribute name="testRunId" default="0" />
+    <attribute name="browserId" default="unknown" />
+    <attribute name="timeout" default="10"/>
+    <attribute name="enableWindowLogging" default="false"/>
+	  <sequential>
+      <echo message="launching all js test files in PhantomJS" taskname="phantomjs" />
+      <mkdir dir="${out.phantomjs}" taskname="phantomjs" />
+
+      <!-- test the testUrl is accessible for testing -->
+      <get src="@{testUrl}" dest="${out.phantomjs}/phantomjs.server.alive.txt" maxtime="10" taskname="phantomjs" />
+      <delete file="${out.phantomjs}/phantomjs.server.alive.txt" taskname="phantomjs" />
+
+      <exec executable="phantomjs" failonerror="true">
+        <arg value="${testrunner.dir}/phantomjs/run-yuitest-multi.js" />
+        <arg value="--outputDirectory=@{outputDirectory}" />
+        <arg value="--testDirectory=@{testDirectory}" />
+        <arg value="--testFileMatch=@{testFileMatch}" />
+        <arg value="--testUrl=@{testUrl}" />
+        <arg value="--testRunId=@{testRunId}" />
+        <arg value="--browserId=@{browserId}" />
+        <arg value="--timeout=@{timeout}" />
+        <arg value="--enableWindowLogging=@{enableWindowLogging}" />
+      </exec>
+
+	  </sequential>
+  </macrodef>
+
+  <macrodef name="phantomjs-testrunner-single" description="load javascript test files using phantomjs and report">
+    <attribute name="testUrl" default="index.html" />
+	  <sequential>
+      <echo message="launching all js test files in PhantomJS" taskname="phantomjs" />
+      <mkdir dir="${out.phantomjs}" taskname="phantomjs" />
+
+      <exec executable="phantomjs" failonerror="true">
+        <arg value="${testrunner.dir}/phantomjs/run-yuitest-single.js" />
+        <arg value="@{testUrl}" />
+      </exec>
+
+	  </sequential>
+  </macrodef>
+
+  <target name="phantomjs-clean">
+    <echo message="Cleaning the ${module.name} PhantomJS folder" taskname="phantomjs" />
+    <delete dir="${out.phantomjs}" includes="**/**" includeemptydirs="yes" failonerror="false" />
+  </target>
+
+</project>
