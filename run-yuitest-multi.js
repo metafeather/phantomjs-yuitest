@@ -7,7 +7,7 @@
  * Home: https://github.com/metafeather/phantomjs-yuitest
  */
 
-var fileoverview = "PhantomJS YUITest Driver (v0.3.6)";
+var fileoverview = "PhantomJS YUITest Driver (v0.3.7)";
 
 if (typeof(phantom) !== "undefined" && (phantom.version.major >= 1 && phantom.version.minor >= 4)) {
 
@@ -75,10 +75,10 @@ if (typeof(phantom) !== "undefined" && (phantom.version.major >= 1 && phantom.ve
     // WebPage API
     page = require('webpage').create();
 
-    page.javascriptEnabled = true;
-    page.localToRemoteUrlAccessEnabled = true;
-    page.loadImages = true;
-    page.loadPlugins = true;
+    page.settings.javascriptEnabled = true;
+    page.settings.localToRemoteUrlAccessEnabled = true;
+    page.settings.loadImages = true;
+    page.settings.loadPlugins = true;
     page.viewportSize = {
       width: 1024,
       height: 1024
