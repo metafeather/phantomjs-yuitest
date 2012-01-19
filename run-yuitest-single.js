@@ -40,7 +40,7 @@ function waitFor(testFx, onReady, timeOutMillis) {
                     clearInterval(interval); //< Stop this interval
                 }
             }
-        }, 100); //< repeat check every 250ms
+        }, 250); //< repeat check every 250ms
 };
 
 if (phantom.args.length === 0 || phantom.args.length > 2) {
@@ -50,6 +50,15 @@ if (phantom.args.length === 0 || phantom.args.length > 2) {
 
 var page = require('webpage').create();
 
+page.settings.javascriptEnabled = true;
+page.settings.localToRemoteUrlAccessEnabled = true;
+page.settings.loadImages = true;
+page.settings.loadPlugins = true;
+page.viewportSize = {
+  width: 1024,
+  height: 1024
+}
+
 // Route "console.log()" calls from within the Page context to the main Phantom context (i.e. current "this")
 page.onConsoleMessage = function(msg) {
   console.log(msg);
@@ -58,7 +67,8 @@ page.onConsoleMessage = function(msg) {
 page.open(
   phantom.args[0],
   function(status){
-    var exit = 1;
+    var timeout=10,
+        exit = 1;
 
     if (status !== "success") {
       console.log("Unable to access network");
@@ -68,6 +78,7 @@ page.open(
       waitFor(
         function test(){
           return page.evaluate(function(){
+            console.log('Waiting for results ... ');
 
             // check there is a test runner and query its status
             if(window.Y && Y.Test.Runner) {
@@ -98,6 +109,9 @@ page.open(
             }
           });
 
+          // save an image of the page
+          page.render("screenshot.png");
+
           if (data){
             // parseable but human readable output
             if (data.tap){
@@ -106,6 +120,7 @@ page.open(
 
             if (data.junit){
               console.log('Results in JUnit format can easily be saved to the filesystem');
+              //fs.write("junit.xml", data.junit, 'w');
             }
 
             if (data.js){
@@ -114,7 +129,8 @@ page.open(
             }
           }
           phantom.exit(exit);
-        }
+        },
+        (timeout * 1000)
       );
     }
   }
