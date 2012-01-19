@@ -20,6 +20,20 @@ function isBoolean(ref){
 }
 
 /**
+ * Boolean to see if a var is an array
+ */
+function isArray(ref){
+  return (typeof(ref) === 'array');
+}
+
+/**
+ * Boolean to see if a var is an object
+ */
+function isObject(ref){
+  return (typeof(ref) === 'object');
+}
+
+/**
  * Turn a path into just the directory part.
  */
 function toFileDir(path) {

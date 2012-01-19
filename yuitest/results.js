@@ -12,8 +12,11 @@ var testRunData = {
       progress: '',
       total: 0,
       passed: 0,
+      passed_names: [],
       failed: 0,
-      ignored: 0
+      failed_names: [],
+      ignored: 0,
+      ignored_names: []
     },
     timeout = 10;
 
@@ -204,6 +207,63 @@ function updateTestRunData(data) {
     testRunData.passed += data.js.passed;
     testRunData.failed += data.js.failed;
     testRunData.ignored += data.js.ignored;
+
+    // record the names of passed, failed and ignored tests
+    var testsuite = '',
+        testcase = '',
+        test = '',
+        names = {
+          pass: [],
+          fail: [],
+          ignore: []
+        };
+
+    // recursively loop over the results object in the same pattern as a Y.Test.Format
+    function serializeToNameByResultArray(results){
+      switch (results.type){
+        case "test":
+          test = results.name;
+          names[results.result].push(testcase+'.'+test);
+        break;
+        case "testcase":
+          testcase = results.name;
+          for (var prop in results){
+            if (results.hasOwnProperty(prop)){
+              var value = results[prop];
+              if (isObject(value) && !isArray(value)){
+                serializeToNameByResultArray(value);
+              }
+            }
+          }
+        break;
+        case "testsuite":
+          testsuite = results.name;
+          for (var prop in results){
+            if (results.hasOwnProperty(prop)){
+              var value = results[prop];
+              if (isObject(value) && !isArray(value)){
+                serializeToNameByResultArray(value);
+              }
+            }
+          }
+        break;
+        case "report":
+          for (var prop in results){
+            if (results.hasOwnProperty(prop)){
+              var value = results[prop];
+              if (isObject(value) && !isArray(value)){
+                serializeToNameByResultArray(value);
+              }
+            }
+          }
+        break;
+        //no default
+      }
+    }
+    serializeToNameByResultArray(data.js);
+    testRunData.passed_names = testRunData.passed_names.concat(names.pass);
+    testRunData.failed_names = testRunData.failed_names.concat(names.fail);
+    testRunData.ignored_names = testRunData.ignored_names.concat(names.ignore);
   }
 
 };
@@ -217,13 +277,29 @@ function testRunStart(){
 
 function testRunReport(){
   var data = testRunData;
+
+  // save to disk
+  fs.write(outDir + "summary.json", JSON.stringify(data, null, 2), 'w');
+
   console.log(fileoverview);
   console.log(data.progress);
   console.log("Test run "+ data.id +" completed at "+ data.timestamp);
   console.log("Passed:"+ data.passed +" Failed:"+ data.failed +" Total:"+ data.total +" ("+ data.ignored +" ignored)");
   console.log("Files:"+ data.files.total +" ("+ data.files.missing +" missing, "+ data.files.timeouts +" timeout"+ (data.files.timeouts === 1 ? "" : "s") +")");
-
-  fs.write(outDir + "summary.json", JSON.stringify(data, null, 2), 'w');
+  console.log('');
+  console.log('Failed tests:');
+  data.failed_names.forEach(
+    function(v,i,a){
+      console.log('  '+ v)
+    }
+  )
+  console.log('');
+  console.log('Ignored tests:');
+  data.ignored_names.forEach(
+    function(v,i,a){
+      console.log('  '+ v)
+    }
+  )
 
   return data;
 }
