@@ -40,8 +40,8 @@ function makeTestUrls(options){
           relativePath = fullPath.replace(dir + fs.separator, ''),
           testUrl = '';
 
-      // check if item is a file and matches, then create a test url to it
-      if(fs.isFile(fullPath)) {
+      // check if path exists and matches, then create a test url to it
+      if(fs.isFile(fullPath) || fs.isDirectory(fullPath)) {
         if(fullPath.match(FILE_MATCH_RE)) {
           // onsole.log('Selected test file using '+ options.testFileMatch);
           testUrl = fullPath;

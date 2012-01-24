@@ -128,10 +128,11 @@ function dirwalk(path) {
     }
     var fs = require('fs');
 
+    // onsole.log(path);
     if (fs.exists(path) && fs.isFile(path)) {
-      // onsole.log(path);
       files.push(path);
     } else if (fs.isDirectory(path)) {
+      files.push(path);
       fs.list(path).forEach(function (e) {
         if ( e !== "." && e !== ".." ) {    //< Avoid loops
           scanDirectory(path + '/' + e);
