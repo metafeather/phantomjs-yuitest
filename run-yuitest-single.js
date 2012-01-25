@@ -81,7 +81,10 @@ page.open(
             console.log('Waiting for results ... ');
 
             // check there is a test runner and query its status
-            if(window.Y && Y.Test.Runner) {
+            if(window.Y && Y.Test && Y.Test.Runner && !window.TestRunnerStarted) {
+              window.TestRunnerStarted = Y.Test.Runner.isRunning();
+              return false;
+            } else if(window.Y && Y.Test && Y.Test.Runner && window.TestRunnerStarted) {
               return !Y.Test.Runner.isRunning();
             } else {
               console.log("Not a test page");

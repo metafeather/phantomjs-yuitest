@@ -36,6 +36,8 @@ function initPageProperties(){
     window.PhantomJS = true;
     // visual record of tests results
     window.TestRunProgress = '';
+    // wait until the TestRunner has started
+    window.TestRunnerStarted = false;
   });
 
 };
@@ -82,12 +84,15 @@ function waitForResults(){
       console.log('Waiting for results ... ');
 
       return page.evaluate(function(){
-        if(window.Y && Y.Test && Y.Test.Runner) {
+        if(window.Y && Y.Test && Y.Test.Runner && !window.TestRunnerStarted) {
+          window.TestRunnerStarted = Y.Test.Runner.isRunning();
+          return false;
+        } else if(window.Y && Y.Test && Y.Test.Runner && window.TestRunnerStarted) {
           return !Y.Test.Runner.isRunning();
         } else if(window.leon && leon.TestRunner) {
           return !leon.TestRunner.isRunning();
         } else {
-          console.log("Not a test page");
+          console.log("Not a test page?");
           return true;
         }
       });
