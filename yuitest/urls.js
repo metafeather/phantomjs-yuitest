@@ -42,17 +42,20 @@ function makeTestUrls(options){
 
       // check if path exists and matches, then create a test url to it
       if(fs.isFile(fullPath) || fs.isDirectory(fullPath)) {
+        if(fs.isDirectory(fullPath)){
+          fullPath = fullPath + fs.separator;
+        }
+        // onsole.log('Match test file using '+ options.testFileMatch + ' on '+ fullPath);
         if(fullPath.match(FILE_MATCH_RE)) {
-          // onsole.log('Selected test file using '+ options.testFileMatch);
           testUrl = fullPath;
 
           if(isString(options.testFileMatch) && isString(options.testUrl)) {
-            // onsole.log('Created test url using '+ options.testUrl);
             testUrl = fs.workingDirectory + fs.separator + options.testUrl + relativePath;
           }
           if(isString(options.testUrl) && options.testUrl.match(/^http/)){
            testUrl = options.testUrl + relativePath;
           }
+          // onsole.log('Created test url as '+ testUrl);
 
           testFiles.push(testUrl);
         }
