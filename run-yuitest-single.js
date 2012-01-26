@@ -80,12 +80,9 @@ page.open(
           return page.evaluate(function(){
             console.log('Waiting for results ... ');
 
-            // check there is a test runner and query its status
-            if(window.Y && Y.Test && Y.Test.Runner && !window.TestRunnerStarted) {
-              window.TestRunnerStarted = Y.Test.Runner.isRunning();
-              return false;
-            } else if(window.Y && Y.Test && Y.Test.Runner && window.TestRunnerStarted) {
-              return !Y.Test.Runner.isRunning();
+            // check there is a test runner and query its status by asking for any results
+            if(window.Y && Y.Test && Y.Test.Runner) {
+              return !!Y.Test.Runner.getResults();
             } else {
               console.log("Not a test page");
               return true;
