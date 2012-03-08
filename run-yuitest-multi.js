@@ -7,7 +7,7 @@
  * Home: https://github.com/metafeather/phantomjs-yuitest
  */
 
-var fileoverview = "PhantomJS YUITest Driver (v0.3.12)";
+var fileoverview = "PhantomJS YUITest Driver (v0.3.13)";
 
 if (typeof(phantom) !== "undefined" && (phantom.version.major >= 1 && phantom.version.minor >= 4)) {
 

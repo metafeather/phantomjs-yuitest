@@ -88,8 +88,7 @@ function waitForResults(){
         } else if(window.leon && leon.TestRunner) {
           return !leon.TestRunner.isRunning();
         } else {
-          console.log("Not a test page");
-          return true;
+          return false;
         }
 
       });
@@ -117,6 +116,7 @@ function waitForResults(){
             progress: window.TestRunProgress
           }
         } else {
+          console.log("Not a test page");
           return false;
         }
       });
