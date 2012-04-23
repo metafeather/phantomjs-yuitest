@@ -7,7 +7,7 @@
  * Home: https://github.com/metafeather/phantomjs-yuitest
  */
 
-var fileoverview = "PhantomJS YUITest Driver (v0.3.13)";
+var fileoverview = "PhantomJS YUITest Driver (v0.3.14)";
 
 if (typeof(phantom) !== "undefined" && (phantom.version.major >= 1 && phantom.version.minor >= 4)) {
 
@@ -55,6 +55,9 @@ if (typeof(phantom) !== "undefined" && (phantom.version.major >= 1 && phantom.ve
   // use supplied ID's to create a unique output directory for the run in the browser
   outDir += (!isUndefined(options.testRunId) ? options.testRunId + fs.separator : '0' + fs.separator);
   outDir += (!isUndefined(options.browserId) ? options.browserId + fs.separator : 'unknown' + fs.separator);
+
+  // make path x-platform
+  outDir = fixPathSeparator(outDir);
 
   // clear old results
   fs.removeTree(outDir);

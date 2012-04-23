@@ -37,7 +37,7 @@ function makeTestUrls(options){
     for(var i = 0; i < allFiles.length; i++) {
       var file = allFiles[i],
           fullPath = fs.absolute(file),
-          relativePath = fullPath.replace(dir + fs.separator, ''),
+          relativePath = fullPath.replace(dir + '/', ''),
           testUrl = '';
 
       // check if path exists and matches, then create a test url to it

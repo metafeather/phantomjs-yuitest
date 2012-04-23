@@ -34,6 +34,12 @@ function isObject(ref){
 }
 
 /**
+ * Normalise path separators x-platform.
+ */
+function fixPathSeparator(path) {
+	return path.replace(/\\/g, fs.separator).replace(/\//g, fs.separator);
+}
+/**
  * Turn a path into just the directory part.
  */
 function toFileDir(path) {
@@ -45,7 +51,16 @@ function toFileDir(path) {
  */
 function toFileName(path) {
 	var nameStart = Math.max(path.lastIndexOf("/")+1, path.lastIndexOf("\\")+1, 0);
-	return path.substring(nameStart);
+	var filename = path.substring(nameStart);
+
+	// remove bad chars
+	[':', '\\', '/', '*', '"', '<', '>', '|' , '^', '\\0'].forEach(
+	  function (v,i,a){
+    	filename = filename.replace(v, '');
+	  }
+	)
+	filename = filename.replace('?', '#'); // treat query as fragment
+	return filename;
 }
 /**
  * Get the extension of a filename
@@ -133,9 +148,9 @@ function dirwalk(path) {
       files.push(path);
     } else if (fs.isDirectory(path)) {
       files.push(path);
-      fs.list(path).forEach(function (e) {
-        if ( e !== "." && e !== ".." ) {    //< Avoid loops
-          scanDirectory(path + '/' + e);
+      fs.list(path).forEach(function (v,i,a) {
+        if ( v !== "." && v !== ".." ) {    //< Avoid loops
+          scanDirectory(path + fs.separator + v);
         }
       });
     }
