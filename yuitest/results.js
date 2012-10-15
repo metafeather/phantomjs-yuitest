@@ -162,7 +162,7 @@ function testResultsMissing() {
 }
 
 function testResultsTimeout() {
-  console.log('Test results: TIMEOUT')
+  console.log('Test results: PAGE TIMEOUT')
   console.log('')
 
   // save an image of the page
