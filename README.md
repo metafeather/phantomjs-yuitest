@@ -55,7 +55,8 @@ A minimal standalone script *run-yuitest-single.js* is supplied for comparison w
 
 ## History
 
-**2012-01-10** First release v0.3
+**2013-07-23** v0.5 Standalone script now requires PhantomJS 1.6+
+**2012-01-10** v0.3 First release
 
 ## Contributors
 

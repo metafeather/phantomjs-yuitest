@@ -1,137 +1,120 @@
 /*
-* PhantomJS YUITest driver
+* PhantomJS YUITest driver (v0.5)
 *
 * Runs a single HTML file with YUITest setup in it and reports the results in (human readable) TAP format.
 * This is a simple example for comparison with run-qunit.js, run-jasmine.js, etc.
-* See run-yuitest-multi.js for more advanced features, such as running multiple test files as one run, and a results server to store runs from browsers.
 *
 * Home: https://github.com/metafeather/phantomjs-yuitest
+*
+* PhantomJS binaries: http://phantomjs.org/download.html
+* Requires PhantomJS 1.6+ (1.7+ recommended)
+*
+* Run with:
+*   phantomjs runner.js [url-of-your-testsuite]
+*
+* e.g.
+*   phantomjs runner.js http://localhost/tests/index.html
 */
+/*global phantom:true, require:true, console:true, window:true */
 
-/**
- * Wait until the test condition is true or a timeout occurs. Useful for waiting
- * on a server response or for a ui change (fadeIn, etc.) to occur.
- *
- * @param testFx javascript condition that evaluates to a boolean,
- * it can be passed in as a string (e.g.: "1 == 1" or "$('#bar').is(':visible')" or
- * as a callback function.
- * @param onReady what to do when testFx condition is fulfilled,
- * it can be passed in as a string (e.g.: "1 == 1" or "$('#bar').is(':visible')" or
- * as a callback function.
- * @param timeOutMillis the max amount of time to wait. If not specified, 3 sec is used.
- */
-function waitFor(testFx, onReady, timeOutMillis) {
-    var maxtimeOutMillis = timeOutMillis ? timeOutMillis : 3001, //< Default Max Timout is 3s
-        start = new Date().getTime(),
-        condition = false,
-        interval = setInterval(function() {
-            if ( (new Date().getTime() - start < maxtimeOutMillis) && !condition ) {
-                // If not time-out yet and condition not yet fulfilled
-                condition = (typeof(testFx) === "string" ? eval(testFx) : testFx()); //< defensive code
-            } else {
-                if(!condition) {
-                    // If condition still not fulfilled (timeout but condition is 'false')
-                    console.log("'waitFor()' timeout");
-                    phantom.exit(1);
-                } else {
-                    // Condition fulfilled (timeout and/or condition is 'true')
-                    console.log("'waitFor()' finished in " + (new Date().getTime() - start) + "ms.");
-                    typeof(onReady) === "string" ? eval(onReady) : onReady(); //< Do what it's supposed to do once the condition is fulfilled
-                    clearInterval(interval); //< Stop this interval
-                }
-            }
-        }, 250); //< repeat check every 250ms
-};
+(function(phantom, console) {
+	'use strict';
 
-if (phantom.args.length === 0 || phantom.args.length > 2) {
-  console.log('Usage: run-yuitest-single.js URL');
-  phantom.exit(1);
-}
+  var versioncheck = ((1 <= phantom.version.major) && (6 <= phantom.version.minor));
+  if (!versioncheck){
+    console.log('Requires PhantomJS 1.6+ (1.7+ recommended)');
+    console.log('PhantomJS binaries: http://phantomjs.org/download.html');
+		phantom.exit(1);
+	}
 
-var page = require('webpage').create();
+	// arg[0]: scriptName, args[1...]: arguments
+  var args = require('system').args
+	if (args.length !== 2) {
+		console.error('Usage:\n  phantomjs runner.js [url-of-your-testsuite]');
+		phantom.exit(1);
+	}
 
-page.settings.javascriptEnabled = true;
-page.settings.localToRemoteUrlAccessEnabled = true;
-page.settings.loadImages = true;
-page.settings.loadPlugins = true;
-page.viewportSize = {
-  width: 1024,
-  height: 1024
-}
-
-// Route "console.log()" calls from within the Page context to the main Phantom context (i.e. current "this")
-page.onConsoleMessage = function(msg) {
-  console.log(msg);
-};
-
-page.open(
-  phantom.args[0],
-  function(status){
-    var timeout=10,
-        exit = 1;
-
-    if (status !== "success") {
-      console.log("Unable to access network");
-      phantom.exit(exit);
-    } else {
-
-      waitFor(
-        function test(){
-          return page.evaluate(function(){
-            console.log('Waiting for results ... ');
-
-            // check there is a test runner and query its status by asking for any results
-            if(window.Y && Y.Test && Y.Test.Runner) {
-              return !!Y.Test.Runner.getResults();
-            } else {
-              console.log("Not a test page");
-              return true;
-            }
-          });
-
-        },
-        function onReady(){
-          // export test results data
-          var data = page.evaluate(function(){
-
-            // get all the results in various formats for convienience
-            if(window.Y && Y.Test.Runner) {
-              return {
-                js: Y.Test.Runner.getResults(), // JS object
-                tap: Y.Test.Runner.getResults(Y.Test.Format.TAP), // plain text
-                json: Y.Test.Runner.getResults(Y.Test.Format.JSON), // JSON String
-                junit: Y.Test.Runner.getResults(Y.Test.Format.JUnitXML), // Single JUnit file
-                xml: Y.Test.Runner.getResults(Y.Test.Format.XML), // Single XML file
-              }
-
-            } else {
-              return false;
-            }
-          });
-
-          // save an image of the page
-          page.render("screenshot.png");
-
-          if (data){
-            // parseable but human readable output
-            if (data.tap){
-              console.log('Test results: '+ data.tap);
-            }
-
-            if (data.junit){
-              console.log('Results in JUnit format can easily be saved to the filesystem');
-              //fs.write("junit.xml", data.junit, 'w');
-            }
-
-            if (data.js){
-              // exit indicating failed states
-              exit = (parseInt(data.js.failed) > 0 ? 1: 0);
-            }
-          }
-          phantom.exit(exit);
-        },
-        (timeout * 1000)
-      );
+  function createPage(){
+    var page = require('webpage').create();
+    page.settings.javascriptEnabled = true;
+    page.settings.localToRemoteUrlAccessEnabled = true;
+    page.settings.webSecurityEnabled = true;  // enforce Same-Origin sandbox
+    page.settings.loadImages = true;
+    page.settings.loadPlugins = true;
+    page.viewportSize = {
+      width: 1024,
+      height: 2048
     }
-  }
-);
+    return page;
+  };
+
+  var context = this,
+      url = args[1],
+      page = createPage();
+
+	// Route console.log() calls from within the Page context to the main Phantom context (i.e. current this)
+	page.onConsoleMessage = function(msg) {
+		console.log(msg);
+	};
+
+	page.onInitialized = function() {
+    console.log('Page loading...');
+	};
+
+  // invoked by calling window.callPhantom() in the page
+	page.onCallback = function(message) {
+    console.log('Test data received...');
+
+		var fs = require('fs'),
+		    exit;
+
+		if (message) {
+			if ('YUITest.TestRunner.COMPLETE_EVENT' === message.name) {
+
+        // save an image of the page
+        page.render("results/screenshot.png");
+
+        if (message.data){
+          // parseable but human readable output
+          if (message.data.tap){
+            //console.log('Test results: '+ message.data.tap);
+            //fs.write("tap.txt", message.data.tap, 'w');
+          }
+
+          if (message.data.junit){
+            // console.log('Results in JUnit format can easily be saved to the filesystem');
+            fs.write("results/junit.xml", message.data.junit, 'w');
+          }
+
+          if (message.data.js){
+            // exit indicating failed status
+            exit = (parseInt(message.data.js.failed) > 0 ? 1: 0);
+          }
+        }
+        phantom.exit(exit);
+
+			}
+		}
+	};
+
+	page.open(
+	  url,
+    function(status) {
+      if (status !== 'success') {
+        console.error('Unable to access network: ' + status + ' ' + url);
+        phantom.exit(1);
+      } else {
+        // Cannot do this verification with the 'DOMContentLoaded' handler because it
+        // will be too late to attach it if a page does not have any script tags.
+        var missing = page.evaluate(function() { return (typeof YUITest === 'undefined' || !YUITest); });
+        if (missing) {
+          console.error('The YUITest object is not present on this page.');
+          phantom.exit(1);
+        }
+
+        // Do nothing... the callback mechanism will handle everything!
+      }
+    }
+  );
+
+}(phantom, console));
